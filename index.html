@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>胡狗子专属</title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+		html {
+			background: #FFFFFF; /* 底色 */
+			min-height: 100vh;
+		}
+		body {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: #FFFFFF;
+		}
+		.calendar { 
+			width: 90vw;
+		}
+		.calendar-item {
+			padding: 3px 10px;
+		}
+		.calendar-item:hover {
+			box-shadow: 0 0 10px #eeeeee; 
+		}
+
+		.calendar-type1 {
+			display: flex;
+			flex-direction: column;
+		}
+		.calendar-type1__title {
+			display: flex;
+			flex-direction: row;
+		}
+		.calendar-type1__title-item {
+			display: flex;
+			width: 13vw;
+			padding: 10px 5px;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			background: #99CCCC;  /* 表头色 */
+		}
+		.calendar-type1__c {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+		}
+		.calendar-type1__c-item {
+			position: relative;
+			flex: 1;
+			display: flex;
+			flex-direction: row;
+			height: 100px;
+			border: 1px solid #99CCCC;  /* 边框色 */
+		}
+		.calendar-type1__c-item-date {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 30%;
+			font-size: 24px;
+		}
+		.calendar-type1__c-item-cuo {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			border: 2px solid #FF6666;
+			transform: rotate(-30deg);
+		}
+		.calendar-type1__c-item-cuo--inline {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #FF6666;
+			font-size: 8px;
+			width: 94%;
+			height: 94%;
+			border-radius: 50%;
+			border: 1px solid #FF6666;
+		}
+		.calendar-type1__c-item-list {
+			list-style: none;
+			padding: 0;
+		}
+		.calendar-type1__c-item-li {
+			font-size: 12px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+		}
+		.calendar-type1__c-item-list-name {
+			width: 30px;
+		}
+		.calendar-type1__c-item-list-input {
+			width: 70px;
+			text-align: right;
+			border: none;
+			outline: none;
+			border: 1px solid #cccccc;
+		}
+
+
+		.display {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<h1>胡狗子的健身表</h1>
+	<div class="calender-type1">
+		<div class="calendar-type1__title">
+			<div class="calendar-type1__title-item">星期日</div>
+			<div class="calendar-type1__title-item">星期一</div>
+			<div class="calendar-type1__title-item">星期二</div>
+			<div class="calendar-type1__title-item">星期三</div>
+			<div class="calendar-type1__title-item">星期四</div>
+			<div class="calendar-type1__title-item">星期五</div>
+			<div class="calendar-type1__title-item">星期六</div>
+		</div>
+		<div class="calendar-type1__content">
+			<div class="calendar-type1__c">
+				<div class="calendar-type1__c-item">
+					<div class="calendar-type1__c-item-date">1</div>
+					<ul class="calendar-type1__c-item-list">
+						<li class="calendar-type1__c-item-li">
+							<div class="calendar-type1__c-item-list-name">跳绳</div>
+							<input class="calendar-type1__c-item-list-input" />
+						</li>
+					</ul>
+					<div class="calendar-type1__c-item-cuo">
+						<div class="calendar-type1__c-item-cuo--inline">
+							跳绳1500
+						</div>
+					</div>
+				</div>
+				<div class="calendar-type1__c-item">2</div>
+				<div class="calendar-type1__c-item">3</div>
+				<div class="calendar-type1__c-item">4</div>
+				<div class="calendar-type1__c-item">5</div>
+				<div class="calendar-type1__c-item">6</div>
+				<div class="calendar-type1__c-item">7</div>
+			</div>
+		</div>
+	</div>
+	<div class="calendar display"></div>
+
+	<script>
+		function getMonthOption(month = 12) {
+			const days = 31;
+			const monthOptions =  new Array(31).fill('').map((item, index) => {
+				const date = new Date(`2022-${month}-${index + 1}`);
+				const curDate = new Date();
+				const num = getStorageDate(`2022-${month}-${index + 1}`);
+				return {
+					day: index + 1,
+					week: date.getDay(),
+					isCurrentDay: curDate.getDate() === date.getDate() && curDate.getMonth() === date.getMonth(),
+					num,
+					isCuo: num ? true : '',
+				}
+			})
+			let newMonthOptions = new Array(monthOptions[0].week).fill('').concat(monthOptions);
+		
+			const result = [];
+			newMonthOptions.forEach((item, index) => {
+				const tag = index;
+				const y = Math.floor(tag / 7)
+				const x = tag % 7;
+				if (result[y]) {
+					result[y][x] = item;
+				} else {
+					result[y] = [item];
+				}
+			})
+			return result;
+		}
+
+		const limitMonth = '12';
+		const calendarDom = document.querySelector('.calendar-type1__content');
+		const calendarData = getMonthOption(limitMonth);
+
+		let calendarInnerHtml = '';
+		calendarData.forEach(item => {
+			let rows = '';
+			item.forEach(subItem => {
+				const editDom = subItem.isCurrentDay ? `
+					<ul class="calendar-type1__c-item-list">
+						<li class="calendar-type1__c-item-li">
+							<input class="calendar-type1__c-item-list-input" value="${subItem.num}" />
+						</li>
+					</ul>
+				` : '';
+
+				const cuoDom = subItem.isCuo ? `
+					<div class="calendar-type1__c-item-cuo">
+						<div class="calendar-type1__c-item-cuo--inline ${subItem.isCurrentDay ? 'current-cuo' : ''}">
+							跳绳${subItem.num}
+						</div>
+					</div>
+				`: '';
+				rows += `
+					<div class="calendar-type1__c-item">
+						<div class="calendar-type1__c-item-date">${subItem ? subItem.day : ''}</div>
+						${editDom}
+						${cuoDom}
+					</div>
+				`
+			})
+			calendarInnerHtml += `<div class="calendar-type1__c">${rows}</div>`	
+		});
+		calendarDom.innerHTML = calendarInnerHtml;
+
+		const inputDom = document.querySelector('.calendar-type1__c-item-list-input').addEventListener('input', (e) => {
+			setDateToStorage(e.target.value);
+			const cuoDom = document.querySelector('.current-cuo');
+			cuoDom.innerHTML = `跳绳${e.target.value}`;
+		})
+
+		function setDateToStorage(key, value) {
+			const date = new Date();
+			let sKey = value == undefined ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` : key;
+			let sValue = value == undefined ? key : value;
+			const dataString = localStorage.getItem('hugouzi_date_options') || '';
+			const dataOptions = dataString ? JSON.parse(dataString) : {};
+
+			dataOptions[sKey] = sValue;
+			localStorage.setItem('hugouzi_date_options', JSON.stringify(dataOptions));
+		}
+
+		function getStorageDate(key) {
+			const dataString = localStorage.getItem('hugouzi_date_options') || '';
+			const dataOptions = dataString ? JSON.parse(dataString) : {};
+			
+			if (key) {
+				return dataOptions[key] || '';
+			}
+			return dataOptions;
+		}
+
+	</script>
+</body>
+</html>
