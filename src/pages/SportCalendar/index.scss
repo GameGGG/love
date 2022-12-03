@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+}
+
+@function vw($px) {
+  @return $px / 7.5+vw
+};
+
+.s-c {
+  &__container {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  &__title {
+    color: #c86f67;
+    font-size: vw(60);
+    text-align: center;
+  }
+
+  &__calendar {
+    width: 100%;
+    font-size: vw(24);
+
+    &-title-c {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+    }
+
+    &-title-item {
+      flex: 1;
+      padding: vw(10) 0;
+      text-align: center;
+			background: #99CCCC;  /* 表头色 */
+    }
+
+    &-content {
+      display: flex;
+      flex-direction: column;
+
+      &-col {
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid #99CCCC;  /* 边框色 */
+
+        &-item {
+          height: vw(100);
+          flex: 1;
+          border-left: 1px solid #99CCCC;  /* 边框色 */
+          &:nth-last-child(1) {
+            border-right: 1px solid #99CCCC;  /* 边框色 */
+          }
+
+
+          &-day {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
