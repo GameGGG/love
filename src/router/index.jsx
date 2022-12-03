@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 
 
 import SportCalendar from './../pages/SportCalendar';
@@ -14,7 +14,7 @@ export default class RouterContainer extends React.Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           {
             routerConfig.map(item => {
@@ -24,7 +24,7 @@ export default class RouterContainer extends React.Component {
             })
           }
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     )
   }
 }
