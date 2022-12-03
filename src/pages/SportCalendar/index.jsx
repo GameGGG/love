@@ -12,8 +12,8 @@ export default function SportCalendar() {
   useEffect(() => {
     setCalendarInfo(getMonthOption());
 
-    setSessionDate(getStorageDate() || {});
     // 获取localStorage数据
+    setSessionDate(getStorageDate() || {});
   }, []);
 
   // 当sessionDate数据有变动时，同步到localStorage中
@@ -24,7 +24,8 @@ export default function SportCalendar() {
   function getMonthOption(month = 12) {
     const days = 31;
     const monthOptions =  new Array(31).fill('').map((item, index) => {
-      const date = new Date(`2022-${month}-${index + 1}`);
+      const day = `00${index + 1}`.slice(-2);
+      const date = new Date(`2022-${month}-${day}`);
       const curDate = new Date();
       const num = getStorageDate(`2022-${month}-${index + 1}`);
       return {
@@ -35,6 +36,7 @@ export default function SportCalendar() {
         isCuo: num ? true : '',
       }
     })
+    console.log("==========[]==========: ", monthOptions, monthOptions[0].week)
     let newMonthOptions = new Array(monthOptions[0].week).fill('').concat(monthOptions);
   
     const result = [];
