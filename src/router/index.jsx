@@ -5,6 +5,10 @@ import { Routes, Route, HashRouter } from 'react-router-dom';
 import SportCalendar from './../pages/SportCalendar';
 const routerConfig = [
   {
+    path: '/',
+    component: <SportCalendar />,
+  },
+  {
     path: '/sport_calendar',
     component: <SportCalendar />,
   }
