@@ -17,7 +17,9 @@ export default function SportCalendar() {
   }, []);
 
   // 当sessionDate数据有变动时，同步到localStorage中
-  useEffect(() => {}, [sessionDate])
+  useEffect(() => {
+    localStorage.setItem('hugouzi_date_options', JSON.stringify(sessionDate));
+  }, [sessionDate])
 
   function getMonthOption(month = 12) {
     const days = 31;
