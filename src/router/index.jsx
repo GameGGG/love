@@ -9,7 +9,7 @@ const routerConfig = [
     component: <SportCalendar />,
   },
   {
-    path: '/sport_calendar',
+    path: 'sport_calendar',
     component: <SportCalendar />,
   }
 ]

@@ -8,6 +8,8 @@ export default function SportCalendar() {
 
   const [calenderInfo, setCalendarInfo] = useState(null);
   const [sessionDate, setSessionDate] = useState({});
+  const [skippingRope, setSkippingRope] = useState('');
+  const [runing, setRuning] = useState('');
 
   useEffect(() => {
     setCalendarInfo(getMonthOption());
@@ -18,7 +20,9 @@ export default function SportCalendar() {
 
   // 当sessionDate数据有变动时，同步到localStorage中
   useEffect(() => {
-    localStorage.setItem('hugouzi_date_options', JSON.stringify(sessionDate));
+    if (Object.keys(sessionDate).length > 0) {
+      localStorage.setItem('hugouzi_date_options', JSON.stringify(sessionDate));
+    }
   }, [sessionDate])
 
   function getMonthOption(month = 12) {
@@ -36,7 +40,6 @@ export default function SportCalendar() {
         isCuo: num ? true : '',
       }
     })
-    console.log("==========[]==========: ", monthOptions, monthOptions[0].week)
     let newMonthOptions = new Array(monthOptions[0].week).fill('').concat(monthOptions);
   
     const result = [];
@@ -74,20 +77,39 @@ export default function SportCalendar() {
     return dataOptions;
   }
 
+  const clickHandle = () => {
+    const date = new Date();
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const newSessionDate = { ...sessionDate };
+    newSessionDate[key] = skippingRope;
+    setSessionDate(newSessionDate);
+    window.location.reload();
+  };
+
 
 
 
   const renderCalendarItem = (data, index) => {
     return (
-      <div class="s-c__calendar-content-col-item" key={index}>
-        <div class="s-c__calendar-content-col-item-day">{data.day || ''}</div>
+      <div className={`s-c__calendar-content-col-item ${data.isCurrentDay ? 'active' : ''}`} key={index}>
+        <div className="s-c__calendar-content-col-item-day">{data.day || ''}</div>
+
+        {
+          data.isCuo && (
+            <div class="s-c__calendar-content-col-item-cuo">
+              <div class="s-c__calendar-content-col-item-cuo--inline">
+                跳绳{data.num}
+              </div>
+            </div>
+          )
+        }
       </div>
     );
   }
 
   const renderCalendarCol = (data, index) => {
     return (
-      <div class="s-c__calendar-content-col" key={index}>
+      <div className="s-c__calendar-content-col" key={index}>
         { data.map(renderCalendarItem) }
       </div>
     )
@@ -96,19 +118,29 @@ export default function SportCalendar() {
     <div className="s-c__container">
       <h1 className="s-c__title">胡狗子的健身表</h1>
       <div className="s-c__calendar">
-        <div class="s-c__calendar-title-c">
+        <div className="s-c__calendar-title-c">
           {
             weekDate.map(item => <div className="s-c__calendar-title-item">{item}</div>)
           }
         </div>
-        <div class="s-c__calendar-content">
+        <div className="s-c__calendar-content">
           {
             calenderInfo && calenderInfo.map(renderCalendarCol)
           }
         </div>
       </div>
 
-      <div className="s-c__picker"></div>
+      <div className="s-c__picker">
+        <div className="s-c__picker-in-box">
+          <div className="s-c__picker-in-label">跳绳:</div>
+          <div><input className="s-c__picker-in-input" onInput={e => setSkippingRope(e.target.value)} /></div>
+        </div>
+        {/* <div className="s-c__picker-in-box">
+          <div className="s-c__picker-in-label">跑步:</div>
+          <div><input className="s-c__picker-in-input" onInput={e => setRuning(e.target.value)} /></div>
+        </div> */}
+        <div className="s-c__picker-in-button" onClick={clickHandle}>确认</div>
+      </div>
     </div>
   )
 }
