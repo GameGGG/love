@@ -6,6 +6,9 @@ import './index.scss';
 export default function SportCalendar() {
   const weekDate = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
 
+  const [dialogType, setDialogType] = useState(1);
+  const [userSelectDate, setUserSelectDate] = useState('');
+  const [buQianDate, setBuQianDate] = useState('');
   const [calenderInfo, setCalendarInfo] = useState(null);
   const [sessionDate, setSessionDate] = useState({});
   const [skippingRope, setSkippingRope] = useState('');
@@ -33,6 +36,8 @@ export default function SportCalendar() {
       const curDate = new Date();
       const num = getStorageDate(`2022-${month}-${index + 1}`);
       return {
+        date: `2022-${month}-${index + 1}`,
+        timer: date.getTime(),
         day: index + 1,
         week: date.getDay(),
         isCurrentDay: curDate.getDate() === date.getDate() && curDate.getMonth() === date.getMonth(),
@@ -56,17 +61,6 @@ export default function SportCalendar() {
     return result;
   }
 
-  function setDateToStorage(key, value) {
-    const date = new Date();
-    let sKey = value == undefined ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` : key;
-    let sValue = value == undefined ? key : value;
-    const dataString = localStorage.getItem('hugouzi_date_options') || '';
-    const dataOptions = dataString ? JSON.parse(dataString) : {};
-
-    dataOptions[sKey] = sValue;
-    localStorage.setItem('hugouzi_date_options', JSON.stringify(dataOptions));
-  }
-
   function getStorageDate(key) {
     const dataString = localStorage.getItem('hugouzi_date_options') || '';
     const dataOptions = dataString ? JSON.parse(dataString) : {};
@@ -86,12 +80,13 @@ export default function SportCalendar() {
     window.location.reload();
   };
 
-
-
-
   const renderCalendarItem = (data, index) => {
     return (
-      <div className={`s-c__calendar-content-col-item ${data.isCurrentDay ? 'active' : ''}`} key={index}>
+      <div
+        className={`s-c__calendar-content-col-item ${data.isCurrentDay ? 'active' : ''}`}
+        key={index}
+        onClick={() => selecteDateHandle(data)}
+      >
         <div className="s-c__calendar-content-col-item-day">{data.day || ''}</div>
 
         {
@@ -105,7 +100,7 @@ export default function SportCalendar() {
         }
       </div>
     );
-  }
+  };
 
   const renderCalendarCol = (data, index) => {
     return (
@@ -113,7 +108,31 @@ export default function SportCalendar() {
         { data.map(renderCalendarItem) }
       </div>
     )
+  };
+
+  const selecteDateHandle = (data) => {
+    const curDate = new Date();
+    const y = curDate.getFullYear();
+    const m = `00${curDate.getMonth() + 1}`.slice(-2);
+    const d = `00${curDate.getDate()}`.slice(-2);
+
+    const currentDayFirstTimer = new Date(`${y}-${m}-${d} 00:00`).getTime();
+    const currentDayLastTimer = new Date(`${y}-${m}-${d} 24:00`).getTime();
+    setUserSelectDate(data.date);
+
+    if (data.timer < currentDayFirstTimer && !data.isCuo) {
+      setDialogType(3);
+      setBuQianDate(data.date);
+    } else if (data.timer < currentDayFirstTimer && data.isCuo) {
+      setDialogType(2);
+    } else if (data.timer < currentDayLastTimer) {
+      setDialogType(1);
+      setBuQianDate('');
+    } else {
+      setDialogType(4);
+    }
   }
+
   return (
     <div className="s-c__container">
       <h1 className="s-c__title">胡狗子的健身表</h1>
@@ -130,17 +149,52 @@ export default function SportCalendar() {
         </div>
       </div>
 
-      <div className="s-c__picker">
-        <div className="s-c__picker-in-box">
-          <div className="s-c__picker-in-label">跳绳:</div>
-          <div><input className="s-c__picker-in-input" onInput={e => setSkippingRope(e.target.value)} /></div>
-        </div>
-        {/* <div className="s-c__picker-in-box">
-          <div className="s-c__picker-in-label">跑步:</div>
-          <div><input className="s-c__picker-in-input" onInput={e => setRuning(e.target.value)} /></div>
-        </div> */}
-        <div className="s-c__picker-in-button" onClick={clickHandle}>确认</div>
-      </div>
+      {
+        dialogType === 4 && (
+          <div className="s-c__picker">
+            <div>{userSelectDate ? `${userSelectDate}：` : ''} 这天还没开始哟~</div>
+          </div>
+        )
+      }
+
+      {
+        dialogType === 3 && (
+          <div className="s-c__picker">
+            <div>补签{buQianDate ? `：${buQianDate}` : ''}</div>
+            <div className="s-c__picker-in-box">
+              <div className="s-c__picker-in-label">跳绳:</div>
+              <div><input className="s-c__picker-in-input" onInput={e => setSkippingRope(e.target.value)} /></div>
+            </div>
+            <div className="s-c__picker-in-button" onClick={clickHandle}>确认</div>
+          </div>
+        )
+      }
+      
+      {
+        dialogType === 2 && (
+          <div className="s-c__picker">
+            <div>{userSelectDate ? `${userSelectDate}：` : ''} 这一天很棒，你运动了哟～</div>
+            <div></div>
+          </div>
+        )
+      }
+
+      {
+        dialogType === 1 && (
+          <div className="s-c__picker">
+            <div className="s-c__picker-in-box">
+              <div className="s-c__picker-in-label">跳绳:</div>
+              <div><input className="s-c__picker-in-input" onInput={e => setSkippingRope(e.target.value)} /></div>
+            </div>
+            {/* <div className="s-c__picker-in-box">
+              <div className="s-c__picker-in-label">跑步:</div>
+              <div><input className="s-c__picker-in-input" onInput={e => setRuning(e.target.value)} /></div>
+            </div> */}
+            <div className="s-c__picker-in-button" onClick={clickHandle}>确认</div>
+          </div>
+        )
+      }
+
     </div>
   )
 }
