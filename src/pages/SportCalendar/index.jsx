@@ -72,6 +72,15 @@ export default function SportCalendar() {
     return dataOptions;
   }
 
+  const changePreDayData = () => {
+    const date = new Date(userSelectDate);
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const newSessionDate = { ...sessionDate };
+    newSessionDate[key] = skippingRope;
+    setSessionDate(newSessionDate);
+    window.location.reload();
+  }
+
   const clickHandle = () => {
     const date = new Date();
     const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -166,7 +175,7 @@ export default function SportCalendar() {
               <div className="s-c__picker-in-label">跳绳:</div>
               <div><input className="s-c__picker-in-input" onInput={e => setSkippingRope(e.target.value)} /></div>
             </div>
-            <div className="s-c__picker-in-button" onClick={clickHandle}>确认</div>
+            <div className="s-c__picker-in-button" onClick={changePreDayData}>确认</div>
           </div>
         )
       }
