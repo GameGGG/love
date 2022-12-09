@@ -123,7 +123,7 @@ export default function SportCalendar() {
     setUserSelectDate(data.date);
 
 
-    console.log("==========[]==========: ", `${y}-${m}-${d} 00:01`);
+    alert(`${currentDayFirstTimer}-${data.timer}-${currentDayLastTimer}`);
     if (data.timer < currentDayFirstTimer && !data.isCuo) {
       setDialogType(3);
     } else if (data.timer < currentDayFirstTimer && data.isCuo) {
