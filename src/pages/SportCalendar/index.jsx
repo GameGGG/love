@@ -33,6 +33,7 @@ export default function SportCalendar() {
     const monthOptions =  new Array(31).fill('').map((item, index) => {
       const day = `00${index + 1}`.slice(-2);
       const month = `00${m}`.slice(-2);
+      console.log("==========[date]==========: ", `2022-${month}-${day}`);
       const date = new Date(`2022-${month}-${day}`);
       const curDate = new Date();
       const num = getStorageDate(`2022-${month}-${index + 1}`);
@@ -118,9 +119,11 @@ export default function SportCalendar() {
     const d = `00${curDate.getDate()}`.slice(-2);
 
     const currentDayFirstTimer = new Date(`${y}-${m}-${d} 00:00`).getTime();
-    const currentDayLastTimer = new Date(`${y}-${m}-${d} 24:00`).getTime();
+    const currentDayLastTimer = new Date(`${y}-${m}-${d} 23:59`).getTime();
     setUserSelectDate(data.date);
 
+
+    console.log("==========[]==========: ", `${y}-${m}-${d} 00:01`);
     if (data.timer < currentDayFirstTimer && !data.isCuo) {
       setDialogType(3);
     } else if (data.timer < currentDayFirstTimer && data.isCuo) {
