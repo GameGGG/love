@@ -28,15 +28,16 @@ export default function SportCalendar() {
     }
   }, [sessionDate])
 
-  function getMonthOption(month = 12) {
+  function getMonthOption(m = 12) {
     const days = 31;
     const monthOptions =  new Array(31).fill('').map((item, index) => {
       const day = `00${index + 1}`.slice(-2);
+      const month = `00${m}`.slice(-2);
       const date = new Date(`2022-${month}-${day}`);
       const curDate = new Date();
       const num = getStorageDate(`2022-${month}-${index + 1}`);
       return {
-        date: `2022-${month}-${index + 1}`,
+        date: `2022-${month}-${day}`,
         timer: date.getTime(),
         day: index + 1,
         week: date.getDay(),
@@ -122,7 +123,6 @@ export default function SportCalendar() {
 
     if (data.timer < currentDayFirstTimer && !data.isCuo) {
       setDialogType(3);
-      setBuQianDate(data.date);
     } else if (data.timer < currentDayFirstTimer && data.isCuo) {
       setDialogType(2);
     } else if (data.timer < currentDayLastTimer) {
@@ -160,7 +160,7 @@ export default function SportCalendar() {
       {
         dialogType === 3 && (
           <div className="s-c__picker">
-            <div>补签{buQianDate ? `：${buQianDate}` : ''}</div>
+            <div>补签{userSelectDate ? `：${userSelectDate}` : ''}</div>
             <div className="s-c__picker-in-box">
               <div className="s-c__picker-in-label">跳绳:</div>
               <div><input className="s-c__picker-in-input" onInput={e => setSkippingRope(e.target.value)} /></div>
