@@ -117,8 +117,8 @@ export default function SportCalendar() {
     const m = `00${curDate.getMonth() + 1}`.slice(-2);
     const d = `00${curDate.getDate()}`.slice(-2);
 
-    const currentDayFirstTimer = new Date(new Date(new Date(`${y}-${m}-${d}`).getTime()-24*60*60*1000).setHours(0,0,0,0)).getTime();
-    const currentDayLastTimer = new Date(new Date(new Date(`${y}-${m}-${d}`).getTime()-24*60*60*1000).setHours(23,59,59,999)).getTime();
+    const currentDayFirstTimer = new Date(new Date(new Date(`${y}-${m}-${d}`).getTime()).setHours(0,0,0,0)).getTime();
+    const currentDayLastTimer = new Date(new Date(new Date(`${y}-${m}-${d}`).getTime()).setHours(23,59,59,999)).getTime();
     setUserSelectDate(data.date);
 
 
